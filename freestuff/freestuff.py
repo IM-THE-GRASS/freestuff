@@ -1,11 +1,21 @@
 
 import reflex as rx
-
+import requests
 from rxconfig import config
 from freestuff.components.select import select
+from freestuff.components.card import card
 
 class State(rx.State):
-    pass
+    results:list[dict[str,str]]
+    def get_resullts(self):
+        response = requests.get("https://www.gamerpower.com/api/giveaways")
+        data = response.json()
+        self.results.extend(data)
+    exampleoptions = [
+        {"value": "example", "label": "example"},
+        {"value": "example", "label": "example"},
+        {"value": "example", "label": "example"}
+    ]
 
 
 def index() -> rx.Component:
@@ -16,90 +26,40 @@ def index() -> rx.Component:
         ),
         rx.hstack(
             select(
+                options = State.exampleoptions,
                 width="183px",
                 height="66px",
-                isSearchable=True,
+                isSearchable=False,
                 isClearable=True,
                 placeholder = "Sort"
             ),
             select(
+                options = State.exampleoptions,
                 width="183px",
                 height="66px",
-                isSearchable=True,
+                isSearchable=False,
                 isClearable=True,
                 placeholder="Platform"
                 
             ),
             select(
+                options = State.exampleoptions,
                 width="183px",
                 height="66px",
-                isSearchable=True,
+                isSearchable=False,
                 isClearable=True,
                 placeholder = "Type"
             ),
         ),
-        rx.hstack(
-            rx.vstack(
-                rx.image(
-                    src="https://cloud-9stmoqu74-hack-club-bot.vercel.app/066c7530484a53.jpg",
-                    object_fit="cover",
-                    width="100%",
-                    height="247px",
-                    margin="8px"
-                ),
-                rx.vstack(
-                    rx.box(
-                        rx.text(
-                            "The Callisto Protocol (Epic Games) Giveaway",
-                            font_size="20   px",
-                            font_weight="bold",
-                        ),
-                    ),
-                    rx.box(
-                        rx.text(
-                            "Save $59.99"  ,
-                            font_size="24px",
-                            line_height="27px",
-                            
-                        ),
-                        margin_top="8px"
-                    ),
-                    rx.box(
-                        rx.text(
-                            'Don’t miss your shot to grab The Callisto Protocol, the spiritual successor to Dead Space, for free on the Epic Games Store. The Callisto Protocol is a narrative-driven, third-person survival horror game set 300 years in the future',
-                            font_size="18px",
-                            line_height="20px",
-                            color="rbga(255,255,255,0.7)"
-
-                        ),
-                        margin_top="8px"
-                    ),
-                    rx.box(
-                        rx.text(
-                            "Ends: Tommorow at 3PM",
-                            font_size="18px"
-                        ),
-                        margin_top="8px"
-                    ),
-                    
-                    spacing="0",
-                    width="100%",
-                    
-                ),
-                rx.button(
-                    rx.image(
-                        src="/getnow.png"
-                    ),
-                    variant="ghost"
-                ),
-                
-                width="550px",
-                height="557px",
-                padding="8px",
-                spacing="0",
-                border = "1px solid #444444"
-                
-            )
+        
+        rx.grid(
+            rx.foreach(
+                State.results,
+                lambda info: card(info)
+            ),
+            columns="3",
+            spacing_x= "9",
+            spacing_y= "6"
         ),
         padding_right="81px",
         padding_left="81px",
