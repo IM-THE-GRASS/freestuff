@@ -3,7 +3,7 @@ def card(info):
     return rx.hstack(
         rx.vstack(
             rx.image(
-                src="https://cloud-9stmoqu74-hack-club-bot.vercel.app/066c7530484a53.jpg",
+                src=info["image"],
                 object_fit="cover",
                 width="100%",
                 height="247px",
@@ -11,55 +11,78 @@ def card(info):
             rx.vstack(
                 rx.box(
                     rx.text(
-                        info["titles"],
+                        info["title"],
                         font_size="22px",
                         font_weight="700",
                     ),
                 ),
-                rx.box(
+                rx.hstack(
                     rx.text(
-                        "Save $59.99"  ,
+                        "Save "  ,
+                        font_size="24px",
+                        line_height="27px",
+                        font_weight="900"
+                        
+                    ),
+                    rx.text(
+                        info["worth"],
                         font_size="24px",
                         line_height="27px",
                         font_weight="900"
                         
                     ),
                 ),
-                rx.box(
+                rx.scroll_area(
                     rx.text(
-                        'Don’t miss your shot to grab The Callisto Protocol, the spiritual successor to Dead Space, for free on the Epic Games Store. The Callisto Protocol is a narrative-driven, third-person survival horror game set 300 years in the future',
+                        info["description"],
                         font_size="18px",
                         line_height="20px",
                         color="rbga(255,255,255,0.7)"
 
                     ),
+                    max_height="15vh"
                 ),
-                rx.box(
-                    rx.text(
-                        "Ends: Tommorow at 3PM",
-                        font_size="18px"
-                    ),
-                ),
+                
                 
                 spacing="2",
                 width="100%",
                 
             ),
-            rx.button(
-                rx.image(
-                    src="/getnow.png",
-                    width="150px",
-                    height="60px",
+            rx.flex(
+                rx.vstack(
+                    rx.hstack(
+                        rx.text(
+                            "Ends:",
+                            font_size="18px"
+                        ),
+                        rx.text(
+                            info["end_date"],
+                            font_size="18px"
+                        ),
+                    ),
+                
+                    rx.button(
+                        rx.image(
+                            src="/getnow.png",
+                            width="150px",
+                            height="60px",
+                        ),
+                        as_child=True,
+                        variant="ghost"
+                    ),
+                    spacing="4"
                 ),
-                as_child=True,
-                variant="ghost"
+                wrap="nowrap",
+                direction="row",
+                align="end",
+                justify="start",
+                height="100%"
             ),
-            
             width="550px",
-            height="557px",
+            height="700px",
             padding="16px",
             spacing="4",
             border = "1px solid #444444",
             border_radius="8px"
         )
-    ),
+    )

@@ -7,16 +7,44 @@ from freestuff.components.card import card
 
 class State(rx.State):
     results:list[dict[str,str]]
-    def get_resullts(self):
-        response = requests.get("https://www.gamerpower.com/api/giveaways")
+    sort_option:str = ""
+    platform_option:str = ""
+    type_option:str = ""
+    @rx.var()
+    def search_url(self):
+        return "https://www.gamerpower.com/api/giveaways?" + self.sort_option + self.type_option + self.platform_option
+    def get_results(_="", url = "https://www.gamerpower.com/api/giveaways?"):
+        response = requests.get(url)
         data = response.json()
-        self.results.extend(data)
-    exampleoptions = [
-        {"value": "example", "label": "example"},
-        {"value": "example", "label": "example"},
-        {"value": "example", "label": "example"}
+        print(response)
+        return data
+    results = get_results()
+    typeoptions = [
+        {"value": "&type=game", "label": "Game"},
+        {"value": "&type=loot", "label": "Loot"},
+        {"value": "&type=beta", "label": "Beta"}
     ]
-
+    sortoptions = [
+        {"value": "&sort=date", "label": "Date"},
+        {"value": "&sort=value", "label": "Value"},
+        {"value": "&sort=popularity", "label": "Popularity"}
+    ]
+    def changetype(self, thing):
+        self.type_option = thing["value"]
+        print(self.search_url)
+        # url = self.search_url
+        # url = str(url)
+        # self.get_results(url)
+        self.results = self.get_results(self.search_url)
+    def changesort(self, thing):
+        self.sort_option = thing["value"]
+        print(self.search_url)
+        self.results = self.get_results(self.search_url)
+        
+        
+        
+    
+    
 
 def index() -> rx.Component:
     
@@ -26,29 +54,30 @@ def index() -> rx.Component:
         ),
         rx.hstack(
             select(
-                options = State.exampleoptions,
+                options = State.sortoptions,
                 width="183px",
                 height="66px",
                 isSearchable=False,
                 isClearable=True,
                 placeholder = "Sort"
             ),
-            select(
-                options = State.exampleoptions,
-                width="183px",
-                height="66px",
-                isSearchable=False,
-                isClearable=True,
-                placeholder="Platform"
+            # select(
+            #     options = State.exampleoptions,
+            #     width="183px",
+            #     height="66px",
+            #     isSearchable=False,
+            #     isClearable=True,
+            #     placeholder="Platform"
                 
-            ),
+            # ),
             select(
-                options = State.exampleoptions,
+                options = State.typeoptions,
                 width="183px",
                 height="66px",
                 isSearchable=False,
                 isClearable=True,
-                placeholder = "Type"
+                placeholder = "Type",
+                onChange=State.changetype
             ),
         ),
         
