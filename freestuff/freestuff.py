@@ -16,6 +16,8 @@ class State(rx.State):
     def get_results(_="", url = "https://www.gamerpower.com/api/giveaways?"):
         response = requests.get(url)
         data = response.json()
+        if type(data) == dict:
+            return []
         print(response)
         return data
     results = get_results()
@@ -25,19 +27,58 @@ class State(rx.State):
         {"value": "&type=beta", "label": "Beta"}
     ]
     sortoptions = [
-        {"value": "&sort=date", "label": "Date"},
-        {"value": "&sort=value", "label": "Value"},
-        {"value": "&sort=popularity", "label": "Popularity"}
+        {"value": "&sort-by=date", "label": "Date"},
+        {"value": "&sort-by=value", "label": "Value"},
+        {"value": "&sort-by=popularity", "label": "Popularity"}
+    ]
+    platformoptions = [
+        {"value": "&platform=ps4", "label": "PS4"},
+        {"value": "&platform=ps5", "label": "PS5"},
+        {"value": "&platform=xbox-one", "label": "Xbox One"},
+        {"value": "&platform=xbox-series-xs", "label": "Xbox Series X/S"},
+        {"value": "&platform=switch", "label": "Switch"},
+        {"value": "&platform=android", "label": "Android"},
+        {"value": "&platform=vr", "label": "VR"},
+        {"value": "&platform=ios", "label": "IOS"},
+        {"value": "&platform=epic-games-store", "label": "Epic Games"},
+        {"value": "&platform=steam", "label": "Steam"},
+        {"value": "&platform=ubisoft", "label": "Ubisoft"},
+        {"value": "&platform=gog", "label": "GOG"},
+        {"value": "&platform=itchio", "label": "itch.io"},
+        {"value": "&platform=origin", "label": "Origin"},
+        {"value": "&platform=xbox-360", "label": "Xbox 360"},
+        {"value": "&platform=drm-free", "label": "DRM Free"},
+        {"value": "&platform=battlenet", "label": "Battlenet"},
     ]
     def changetype(self, thing):
+        if thing == None:
+            self.type_option = ""
+            self.results = self.get_results(self.search_url)
+            return
+        
+        
         self.type_option = thing["value"]
         print(self.search_url)
-        # url = self.search_url
-        # url = str(url)
-        # self.get_results(url)
         self.results = self.get_results(self.search_url)
     def changesort(self, thing):
+        if thing == None:
+            self.type_option = ""
+            self.results = self.get_results(self.search_url)
+            return
+        
+        
         self.sort_option = thing["value"]
+        print(self.search_url)
+        self.results = self.get_results(self.search_url)
+    def changeplatform(self, thing):
+        if thing == None:
+            self.type_option = ""
+            
+            self.results = self.get_results(self.search_url)
+            return
+        
+        
+        self.platform_option = thing["value"]
         print(self.search_url)
         self.results = self.get_results(self.search_url)
         
@@ -59,17 +100,19 @@ def index() -> rx.Component:
                 height="66px",
                 isSearchable=False,
                 isClearable=True,
-                placeholder = "Sort"
+                placeholder = "Sort",
+                onChange=State.changesort
             ),
-            # select(
-            #     options = State.exampleoptions,
-            #     width="183px",
-            #     height="66px",
-            #     isSearchable=False,
-            #     isClearable=True,
-            #     placeholder="Platform"
+            select(
+                options = State.platformoptions,
+                width="183px",
+                height="66px",
+                isSearchable=False,
+                isClearable=True,
+                placeholder="Platform",
+                onChange=State.changeplatform
                 
-            # ),
+            ),
             select(
                 options = State.typeoptions,
                 width="183px",
