@@ -68,7 +68,8 @@ def card(info):
                             height="60px",
                         ),
                         as_child=True,
-                        variant="ghost"
+                        variant="ghost",
+                        on_click=rx.redirect(info["open_giveaway_url"])
                     ),
                     spacing="4"
                 ),
